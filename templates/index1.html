@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+        .converter-card {
+            aspect-ratio: 1 / 1;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            border-width: 2px;
+        }
+        .converter-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+        }
+        .icon-container svg {
+            width: 42px;
+            height: 42px;
+        }
+        .arrow-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        .card-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <header class="max-w-6xl mx-auto mb-12 flex items-center gap-4">
+        <div class="w-12 h-12">
+            <svg viewBox="0 0 83 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 13.3125C0 9.78181 1.40256 6.39572 3.89914 3.89914C6.39572 1.40256 9.78181 0 13.3125 0H25.0393C29.0019 0.78792 32.3612 3.03229 32.3612 3.03229L38.4583 9.12646L0 9.12646V13.3125Z" fill="#FBBF24"/>
+                <path d="M0 9.125V57.6875C0 65.0398 5.96016 71 13.3125 71H69.2241C76.5765 71 82.5366 65.0398 82.5366 57.6875V24.0357C82.5366 16.6834 76.5765 10.7232 69.2241 10.7232H38.4583L32.3612 4.6291C31.3997 3.66765 30.2582 2.90501 29.0019 2.38473C27.7456 1.86444 26.3991 1.59671 25.0393 1.59681H13.3125C9.78181 1.59681 6.39572 3.00412 3.89914 5.5007C1.40256 7.99728 0 11.3834 0 14.9141" fill="#F59E0B"/>
+            </svg>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black tracking-tighter text-black uppercase">
+            Document <span class="text-slate-300">→</span> Converter
+        </h1>
+    </header>
+
+    <main class="max-w-6xl mx-auto border border-slate-100 rounded-[2.5rem] p-8 md:p-12 shadow-sm">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #fb923c;" data-type="PDF TO WORD">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="pdf-icon-placeholder-1"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="word-icon-placeholder-1"></div>
+                </div>
+                <div class="bg-orange-400 text-white py-2.5 text-center font-bold card-label">PDF → WORD</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #60a5fa;" data-type="WORD TO PDF">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="word-icon-placeholder-2"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="pdf-icon-placeholder-2"></div>
+                </div>
+                <div class="bg-blue-400 text-white py-2.5 text-center font-bold card-label">WORD → PDF</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #22c55e;" data-type="EXCEL TO PDF">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="excel-icon-placeholder-1"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="pdf-icon-placeholder-3"></div>
+                </div>
+                <div class="bg-green-500 text-white py-2.5 text-center font-bold card-label">EXCEL → PDF</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #22d3ee;" data-type="IMAGE TO PDF">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="image-icon-placeholder-1"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="pdf-icon-placeholder-4"></div>
+                </div>
+                <div class="bg-cyan-400 text-white py-2.5 text-center font-bold card-label">IMAGE → PDF</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #ef4444;" data-type="TEXT TO PDF">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="text-icon-placeholder-1"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="pdf-icon-placeholder-5"></div>
+                </div>
+                <div class="bg-red-500 text-white py-2.5 text-center font-bold card-label">TEXT → PDF</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #1e293b;" data-type="PDF TO IMAGE">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="pdf-icon-placeholder-6"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="image-icon-placeholder-2"></div>
+                </div>
+                <div class="bg-slate-800 text-white py-2.5 text-center font-bold card-label">PDF → IMAGE</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #a855f7;" data-type="PPT TO PDF">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="ppt-icon-placeholder-1"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="pdf-icon-placeholder-7"></div>
+                </div>
+                <div class="bg-purple-500 text-white py-2.5 text-center font-bold card-label">PPT → PDF</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #ea580c;" data-type="WORD TO TEXT">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="word-icon-placeholder-4"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="text-icon-placeholder-2"></div>
+                </div>
+                <div class="bg-orange-600 text-white py-2.5 text-center font-bold card-label">WORD → TEXT</div>
+            </div>
+
+            <div class="converter-card bg-white rounded-2xl" style="border-color: #94a3b8;" data-type="LINK TO QR CODE">
+                <div class="flex-1 flex flex-col items-center justify-center gap-3 p-4">
+                    <div class="icon-container" id="link-icon-placeholder"></div>
+                    <div class="arrow-icon opacity-20">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5M7 14l5 5 5-5" /></svg>
+                    </div>
+                    <div class="icon-container" id="qr-icon-placeholder"></div>
+                </div>
+                <div class="bg-slate-400 text-white py-2.5 text-center font-bold card-label">LINK → QR CODE</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const icons = {
+            pdf: `<svg viewBox="0 0 50 53" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.3571 26.5C10.8551 26.5 10.3737 26.6994 10.0187 27.0544C9.66371 27.4094 9.46429 27.8908 9.46429 28.3929V37.8571C9.46429 38.3592 9.66371 38.8406 10.0187 39.1956C10.3737 39.5506 10.8551 39.75 11.3571 39.75C11.8592 39.75 12.3406 39.5506 12.6956 39.1956C13.0506 38.8406 13.25 38.3592 13.25 37.8571V35.9643H14.1964C15.4515 35.9643 16.6551 35.4657 17.5426 34.5783C18.43 33.6908 18.9286 32.4872 18.9286 31.2321C18.9286 29.9771 18.43 28.7735 17.5426 27.886C16.6551 26.9986 15.4515 26.5 14.1964 26.5H11.3571ZM14.1964 32.1786H13.25V30.2857H14.1964C14.4474 30.2857 14.6882 30.3854 14.8657 30.5629C15.0431 30.7404 15.1429 30.9811 15.1429 31.2321C15.1429 31.4832 15.0431 31.7239 14.8657 31.9014C14.6882 32.0789 14.4474 32.1786 14.1964 32.1786ZM20.8214 28.3929C20.8214 27.8908 21.0209 27.4094 21.3758 27.0544C21.7308 26.6994 22.2123 26.5 22.7143 26.5H23.6607C25.4178 26.5 27.1029 27.198 28.3453 28.4404C29.5877 29.6828 30.2857 31.3679 30.2857 33.125C30.2857 34.8821 29.5877 36.5672 28.3453 37.8096C27.1029 39.052 25.4178 39.75 23.6607 39.75H22.7143C22.2123 39.75 21.7308 39.5506 21.3758 39.1956C21.0209 38.8406 20.8214 38.3592 20.8214 37.8571V28.3929ZM24.6071 35.8034C25.1617 35.6083 25.6421 35.2459 25.9819 34.7661C26.3217 34.2863 26.5042 33.7129 26.5042 33.125C26.5042 32.5371 26.3217 31.9637 25.9819 31.4839C25.6421 31.0041 25.1617 30.6417 24.6071 30.4466V35.8034ZM32.1786 37.8571V28.3929C32.1786 27.8908 32.378 27.4094 32.733 27.0544C33.088 26.6994 33.5694 26.5 34.0714 26.5H39.75C40.252 26.5 40.7335 26.6994 41.0885 27.0544C41.4434 27.4094 41.6429 27.8908 41.6429 28.3929C41.6429 28.8949 41.4434 29.3763 41.0885 29.7313C40.7335 30.0863 40.252 30.2857 39.75 30.2857H35.9643V32.1786H39.75C40.252 32.1786 40.7335 32.378 41.0885 32.733C41.4434 33.088 41.6429 33.5694 41.6429 34.0714C41.6429 34.5734 41.4434 35.0549 41.0885 35.4099C40.7335 35.7649 40.252 35.9643 39.75 35.9643H35.9643V37.8571C35.9643 38.3592 35.7649 38.8406 35.4099 39.1956C35.0549 39.5506 34.5734 39.75 34.0714 39.75C33.5694 39.75 33.088 39.5506 32.733 39.1956C32.378 38.8406 32.1786 38.3592 32.1786 37.8571ZM26.5 13.25V0H9.46429C7.95823 0 6.51387 0.598277 5.44893 1.66322C4.38399 2.72815 3.78571 4.17252 3.78571 5.67857V20.8214C2.78168 20.8214 1.81877 21.2203 1.10881 21.9302C0.398851 22.6402 0 23.6031 0 24.6071V41.6429C0 42.6469 0.398851 43.6098 1.10881 44.3198C1.81877 45.0297 2.78168 45.4286 3.78571 45.4286V47.3214C3.78571 48.8275 4.38399 50.2718 5.44893 51.3368C6.51387 52.4017 7.95823 53 9.46429 53H39.75C41.256 53 42.7004 52.4017 43.7654 51.3368C44.8303 50.2718 45.4286 48.8275 45.4286 47.3214V45.4286C46.4326 45.4286 47.3955 45.0297 48.1055 44.3198C48.8154 43.6098 49.2143 42.6469 49.2143 41.6429V24.6071C49.2143 23.6031 48.8154 22.6402 48.1055 21.9302C47.3955 21.2203 46.4326 20.8214 45.4286 20.8214V18.9286H32.1786C30.6725 18.9286 29.2282 18.3303 28.1632 17.2654C27.0983 16.2004 26.5 14.7561 26.5 13.25ZM45.4286 24.6071V41.6429H3.78571V24.6071H45.4286ZM30.2857 13.25V0.221464C31.2106 0.48712 32.0527 0.983437 32.7332 1.66382L43.7647 12.6954C44.4451 13.3758 44.9414 14.218 45.2071 15.1429H32.1786C31.6766 15.1429 31.1951 14.9434 30.8401 14.5885C30.4851 14.2335 30.2857 13.752 30.2857 13.25Z" fill="black"/></svg>`,
+            word: `<svg viewBox="0 0 56 62" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M42 5.3H53.2C54.7 5.3 56 6.6 56 8.1V52.9C56 54.4 54.7 55.7 53.2 55.7H42V5.3ZM2.4 5L37.6 0V61.1L2.4 56.1C1 56 0 54.7 0 53.3V7.8C0 6.4 1 5.1 2.4 5Z" fill="#2B579A"/><path d="M10 20L15 40L20 20L25 40L30 20" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+            excel: `<svg viewBox="0 0 50 46" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M31.1 21.8L11.5 18.4V43.8C11.5 45 12.5 46 13.6 46H47.4C48.5 46 49.5 45 49.5 43.8V34.5L31.1 21.8Z" fill="#185C37"/><path d="M31.1 0H13.6C12.5 0 11.5 1 11.5 2.1V11.5L31.1 23L49.5 23V11.5L31.1 0Z" fill="#21A366"/><path d="M0 10.3H23.2C24.4 10.3 25.3 11.2 25.3 12.4V33.5C25.3 34.7 24.4 35.6 23.2 35.6H0V10.3Z" fill="#18884F"/><path d="M7 16L18 30M18 16L7 30" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>`,
+            image: `<svg viewBox="0 0 49 49" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8.5C0 3.8 3.8 0 8.5 0H40.5C45.2 0 49 3.8 49 8.5V40.5C49 45.2 45.2 49 40.5 49H8.5C3.8 49 0 45.2 0 40.5V8.5Z" fill="#0FAFFF"/><circle cx="34" cy="15" r="5" fill="white"/><path d="M0 40L15 25L25 35L35 20L49 35V40H0Z" fill="#B3E0FF"/></svg>`,
+            text: `<svg width="54" height="44" viewBox="0 0 54 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M51.875 21.875C51.875 31.3025 51.875 36.0175 48.945 38.945C46.015 41.8725 41.3025 41.875 31.875 41.875H21.875C12.4475 41.875 7.7325 41.875 4.805 38.945C1.8775 36.015 1.875 31.3025 1.875 21.875C1.875 12.4475 1.875 7.7325 4.805 4.805C7.735 1.8775 12.4475 1.875 21.875 1.875H31.875C41.3025 1.875 46.0175 1.875 48.945 4.805C50.58 6.4375 51.3025 8.625 51.62 11.875" stroke="black" stroke-width="3.75" stroke-linecap="round"/><path d="M17.5001 30.625C17.5001 31.1223 17.6977 31.5992 18.0493 31.9508C18.4009 32.3025 18.8778 32.5 19.3751 32.5C19.8724 32.5 20.3493 32.3025 20.701 31.9508C21.0526 31.5992 21.2501 31.1223 21.2501 30.625H17.5001ZM25.0001 17.9375C25.0001 18.4348 25.1977 18.9117 25.5493 19.2633C25.9009 19.615 26.3778 19.8125 26.8751 19.8125C27.3724 19.8125 27.8493 19.615 28.201 19.2633C28.5526 18.9117 28.7501 18.4348 28.7501 17.9375H25.0001ZM10.0001 17.9375C10.0001 18.4348 10.1977 18.9117 10.5493 19.2633C10.9009 19.615 11.3778 19.8125 11.8751 19.8125C12.3724 19.8125 12.8493 19.615 13.201 19.2633C13.5526 18.9117 13.7501 18.4348 13.7501 17.9375H10.0001ZM14.3751 28.75C13.8778 28.75 13.4009 28.9476 13.0493 29.2992C12.6977 29.6508 12.5001 30.1277 12.5001 30.625C12.5001 31.1223 12.6977 31.5992 13.0493 31.9508C13.4009 32.3025 13.8778 32.5 14.3751 32.5V28.75ZM24.3751 32.5C24.8724 32.5 25.3493 32.3025 25.701 31.9508C26.0526 31.1223 26.2501 31.1223 26.2501 30.625C26.2501 30.1277 26.0526 29.6508 25.701 29.2992C25.3493 28.9476 24.8724 28.75 24.3751 28.75V32.5ZM16.6876 15H19.3751V11.25H16.6876V15ZM19.3751 15H22.0626V11.25H19.3751V15ZM21.2501 30.625V13.125H17.5001V30.625H21.2501ZM22.0626 15C23.2001 15 23.8776 15.0025 24.3676 15.065C24.8101 15.12 24.8326 15.195 24.7926 15.1575L27.2801 12.355C26.5301 11.685 25.6526 11.445 24.8301 11.3425C24.0551 11.2475 23.1026 11.25 22.0626 11.25V15ZM28.7501 17.9375C28.7501 16.8975 28.7526 15.945 28.6576 15.17C28.5551 14.3475 28.3151 13.47 27.6451 12.72L24.8426 15.21C24.8051 15.1675 24.8801 15.19 24.9351 15.635C24.9976 16.1225 25.0001 16.8 25.0001 17.9375H28.7501ZM24.7926 15.1575L24.8401 15.2075L27.6451 12.72C27.5298 12.5921 27.408 12.4703 27.2801 12.355L24.7926 15.1575ZM16.6876 11.25C15.6476 11.25 14.6951 11.2475 13.9201 11.3425C13.0976 11.445 12.2201 11.685 11.4701 12.355L13.9601 15.1575C13.9176 15.195 13.9401 15.12 14.3851 15.065C14.8726 15.0025 15.5501 15 16.6876 15V11.25ZM13.7501 17.9375C13.7501 16.8 13.7526 16.1225 13.8151 15.6325C13.8701 15.19 13.9451 15.1675 13.9076 15.2075L11.1051 12.72C10.4351 13.47 10.1951 14.3475 10.0926 15.17C9.99763 15.945 10.0001 16.8975 10.0001 17.9375H13.7501ZM11.4701 12.355C11.3418 12.47 11.2201 12.5917 11.1051 12.72L13.9076 15.2075L13.9576 15.16L11.4701 12.355ZM14.3751 32.5H24.3751V28.75H14.3751V32.5Z" fill="black"/></svg>`,
+            ppt: `<svg width="56" height="62" viewBox="0 0 56 62" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M42.0007 5.38432H53.2001C53.9427 5.38432 54.6549 5.6793 55.1799 6.20438C55.705 6.72945 56 7.44161 56 8.18418V52.9819C56 53.7245 55.705 54.4367 55.1799 54.9617C54.6549 55.4868 53.9427 55.7818 53.2001 55.7818H42.0007V5.38432ZM2.40788 5.03994L37.6021 0.0141865C37.8005 -0.0142735 38.0027 0.000195865 38.195 0.0566165C38.3873 0.113037 38.5653 0.210094 38.7169 0.341223C38.8684 0.472353 38.9901 0.634499 39.0736 0.816697C39.1571 0.998895 39.2005 1.1969 39.2008 1.39732V59.7688C39.2004 59.9689 39.1571 60.1667 39.0737 60.3486C38.9904 60.5306 38.869 60.6926 38.7178 60.8237C38.5665 60.9548 38.3889 61.0519 38.197 61.1085C38.005 61.1652 37.8031 61.1799 37.6049 61.1519L2.40508 56.1262C1.73765 56.0311 1.12692 55.6984 0.685094 55.1892C0.243266 54.68 6.46927e-06 54.0285 0 53.3543V7.8118C6.46927e-06 7.13763 0.243266 6.4861 0.685094 5.97689C1.12692 5.46768 1.74045 5.13499 2.40788 5.03994ZM8.40238 19.3836V41.7825H14.0021V36.1828H30.8013V19.3836H8.40238ZM14.0021 24.9833H25.2015V30.5831H14.0021V24.9833Z" fill="#FF0004"/></svg>`,
+            link: `<svg viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`,
+            qr: `<svg viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="7" y1="7" x2="7" y2="7"></line><line x1="17" y1="7" x2="17" y2="7"></line><line x1="17" y1="17" x2="17" y2="17"></line><line x1="7" y1="17" x2="7" y2="17"></line></svg>`
+        };
+
+        // Inject icons
+        document.querySelectorAll('[id^="pdf-icon-placeholder"]').forEach(el => el.innerHTML = icons.pdf);
+        document.querySelectorAll('[id^="word-icon-placeholder"]').forEach(el => el.innerHTML = icons.word);
+        document.querySelectorAll('[id^="excel-icon-placeholder"]').forEach(el => el.innerHTML = icons.excel);
+        document.querySelectorAll('[id^="image-icon-placeholder"]').forEach(el => el.innerHTML = icons.image);
+        document.querySelectorAll('[id^="text-icon-placeholder"]').forEach(el => el.innerHTML = icons.text);
+        document.querySelectorAll('[id^="ppt-icon-placeholder"]').forEach(el => el.innerHTML = icons.ppt);
+        document.getElementById('link-icon-placeholder').innerHTML = icons.link;
+        document.getElementById('qr-icon-placeholder').innerHTML = icons.qr;
+
+      // Card Click Handler
+        document.querySelectorAll('.converter-card').forEach(card => {
+            card.onclick = function() {
+                const type = this.getAttribute('data-type');
+                if (type === "LINK TO QR CODE") {
+                    // Redirect directly to the specialized QR converter page
+                    window.location.href = `/qr-converter`;
+                } else {
+                    // All other cards go to the generic upload page
+                    window.location.href = `/upload?type=${encodeURIComponent(type)}`;
+                }
+            };
+        });
+    </script>
+</body>
+</html>

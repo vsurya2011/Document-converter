@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link to QR Converter</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --card-bg: #000000;
+            --accent-green: #00ff85;
+            --text-white: #ffffff;
+            --text-black: #000000;
+        }
+
+        body {
+            font-family: 'Arial Black', Gadget, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .folder-icon {
+            width: 35px;
+            height: 25px;
+            background: var(--card-bg);
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .folder-icon::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 0;
+            width: 15px;
+            height: 5px;
+            background: var(--card-bg);
+            border-radius: 2px 2px 0 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+
+        .sub-header {
+            border: 1.5px solid var(--text-black);
+            display: inline-block;
+            padding: 5px 25px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .converter-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            color: var(--text-white);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+        }
+
+        /* The Link Input Box */
+        .link-input-area {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            background: #111;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .link-input-area:focus {
+            border-color: var(--accent-green);
+        }
+
+        .divider {
+            border-top: 2px dashed #333;
+            margin-bottom: 30px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .upload-box {
+            border: 2px dashed #444;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .upload-box.drag-over {
+            background: #111;
+            border-color: var(--accent-green);
+        }
+
+        .upload-box span {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .upload-box small {
+            font-size: 0.6rem;
+            margin-top: 10px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 1.5rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.1s ease;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-convert {
+            background-color: var(--accent-green);
+            color: var(--text-black);
+        }
+
+        .btn-choose {
+            background-color: var(--text-white);
+            color: var(--text-black);
+        }
+
+        @media (max-width: 600px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="folder-icon"></div>
+            <h1>Document&rarr;Converter</h1>
+        </div>
+        <div class="sub-header">LINK TO QR CODE</div>
+
+        <div class="converter-card">
+            <h2>Paste Your URL Here</h2>
+            <input type="text" id="url-input" class="link-input-area" placeholder="Enter link here...">
+            
+            <div class="divider"></div>
+
+            <div class="controls-grid">
+                <input type="file" id="logo-input" hidden accept="image/*">
+                <div class="upload-box" id="drop-zone">
+                    <span id="upload-status">UPLOAD LOGO</span>
+                    <small>(Optional center image)</small>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-convert" id="convert-btn">Convert</button>
+                    <button class="btn btn-choose" onclick="document.getElementById('logo-input').click()">Choose Logo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const logoInput = document.getElementById('logo-input');
+        const urlInput = document.getElementById('url-input');
+        const convertBtn = document.getElementById('convert-btn');
+        const uploadStatus = document.getElementById('upload-status');
+
+        let selectedLogo = null;
+
+        // Handle Click Upload
+        logoInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectedLogo = e.target.files[0];
+                uploadStatus.innerText = "LOGO LOADED";
+            }
+        });
+
+        // Drag and Drop Logic
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                selectedLogo = e.dataTransfer.files[0];
+                uploadStatus.innerText = "LOGO LOADED";
+            }
+        });
+
+        // Conversion Logic
+        convertBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) {
+                alert("Please enter a URL first!");
+                return;
+            }
+
+            convertBtn.innerText = "CONVERTING...";
+            
+            const formData = new FormData();
+            // We send the link text as a file to match app.py logic
+            const linkFile = new Blob([url], { type: 'text/plain' });
+            formData.append('file', linkFile, 'link.txt');
+            
+            if (selectedLogo) {
+                formData.append('logo', selectedLogo);
+            }
+
+            try {
+                const response = await fetch('/api/convert?type=LINK%20TO%20QR%20CODE', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = "QR_Code.png";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    const error = await response.json();
+                    alert("Error: " + error.error);
+                }
+            } catch (err) {
+                alert("Failed to connect to server.");
+            } finally {
+                convertBtn.innerText = "CONVERT";
+            }
+        });
+    </script>
+</body>
+</html>

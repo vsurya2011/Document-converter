@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Converter - Upload</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #ffffff; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .mode-label { 
+            display: inline-block; 
+            border: 2px solid #000; 
+            border-radius: 12px; 
+            padding: 8px 24px; 
+            font-size: 1rem; 
+            font-weight: 800; 
+            margin-bottom: 2rem; 
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .converter-card { 
+            background-color: #000; 
+            border-radius: 2rem; 
+            padding: 3rem; 
+            color: #fff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-title { 
+            font-size: 2rem; 
+            font-weight: 800; 
+            margin-bottom: 2.5rem; 
+            text-transform: uppercase; 
+            letter-spacing: -0.02em;
+        }
+
+        .dropzone { 
+            border: 2px dashed rgba(255, 255, 255, 0.3); 
+            border-radius: 1.25rem; 
+            height: 250px; 
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dropzone.dragover {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+            transform: scale(1.01);
+        }
+
+        .btn-action {
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.025em;
+        }
+
+        .btn-action:active {
+            transform: scale(0.96);
+        }
+
+        .btn-green {
+            background-color: #22c55e;
+        }
+        
+        .btn-green:hover {
+            background-color: #16a34a;
+        }
+
+        #file-name {
+            word-break: break-all;
+            max-width: 90%;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <header class="max-w-4xl mx-auto w-full mb-8">
+        <a href="/" class="flex items-center gap-4 hover:opacity-80 transition-opacity">
+            <div class="w-10 h-10">
+                <svg viewBox="0 0 83 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 13.3125C0 9.78181 1.40256 6.39572 3.89914 3.89914C6.39572 1.40256 9.78181 0 13.3125 0H25.0393C29.0019 0.78792 32.3612 3.03229 32.3612 3.03229L38.4583 9.12646L0 9.12646V13.3125Z" fill="#FBBF24"/>
+                    <path d="M0 9.125V57.6875C0 65.0398 5.96016 71 13.3125 71H69.2241C76.5765 71 82.5366 65.0398 82.5366 57.6875V24.0357C82.5366 16.6834 76.5765 10.7232 69.2241 10.7232H38.4583L32.3612 4.6291C31.3997 3.66765 30.2582 2.90501 29.0019 2.38473C27.7456 1.86444 26.3991 1.59671 25.0393 1.59681H13.3125C9.78181 1.59681 6.39572 3.00412 3.89914 5.5007C1.40256 7.99728 0 11.3834 0 14.9141" fill="#F59E0B"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tighter text-black uppercase">
+                Document <span class="text-slate-300">→</span> Converter
+            </h1>
+        </a>
+    </header>
+
+    <main class="max-w-4xl mx-auto w-full">
+        <div class="mode-label" id="mode-text">Loading...</div>
+
+        <div class="converter-card">
+            <h2 class="card-title" id="status-title">Choose or Drag File</h2>
+            
+            <div class="flex flex-col lg:flex-row gap-8 items-stretch">
+                <div class="flex-1 dropzone flex flex-col items-center justify-center p-6 text-center" id="dropzone">
+                    <svg class="w-12 h-12 mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <span id="file-name" class="text-xl font-bold uppercase tracking-wide">Upload Here</span>
+                    <input type="file" id="fileInput" class="hidden">
+                </div>
+
+                <div class="flex-1 flex flex-col gap-4 justify-center">
+                    <button class="btn-action w-full py-5 rounded-xl bg-white text-black text-xl" id="chooseBtn">
+                        Choose File
+                    </button>
+                    <button class="btn-action w-full py-5 rounded-xl btn-green text-black text-xl" id="convertBtn">
+                        Convert Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get('type') || 'Converter';
+        document.getElementById('mode-text').innerText = mode;
+
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const chooseBtn = document.getElementById('chooseBtn');
+        const fileNameDisp = document.getElementById('file-name');
+        const convertBtn = document.getElementById('convertBtn');
+        const statusTitle = document.getElementById('status-title');
+        
+        let selectedFile = null;
+
+        chooseBtn.onclick = () => fileInput.click();
+        dropzone.onclick = () => fileInput.click();
+
+        fileInput.onchange = (e) => {
+            if(e.target.files.length > 0) handleFile(e.target.files[0]);
+        };
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
+            dropzone.addEventListener(eName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eName => {
+            dropzone.addEventListener(eName, () => dropzone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eName => {
+            dropzone.addEventListener(eName, () => dropzone.classList.remove('dragover'), false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if(files.length > 0) handleFile(files[0]);
+        }, false);
+
+        function handleFile(file) {
+            selectedFile = file;
+            fileNameDisp.innerText = file.name;
+            statusTitle.innerText = "File Selected";
+            statusTitle.style.color = "#22c55e"; 
+        }
+
+        convertBtn.onclick = async () => {
+            if(!selectedFile) return alert("Please select a file first!");
+
+            convertBtn.disabled = true;
+            chooseBtn.disabled = true;
+            convertBtn.innerText = "Processing...";
+            statusTitle.innerText = "Converting File...";
+            statusTitle.style.color = "#ffffff";
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch(`/api/convert?type=${encodeURIComponent(mode)}`, { 
+                    method: 'POST', 
+                    body: formData 
+                });
+
+                if (!response.ok) {
+                    const errorMsg = await response.json();
+                    throw new Error(errorMsg.error || "Conversion failed");
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                
+                // UPDATED LOGIC: Enhanced extension detection for PPT, EXCEL and QR Code modes
+                let extension = '.txt';
+                const upperMode = mode.toUpperCase();
+
+                // Logic added to handle EXCEL TO PDF specifically
+                if (upperMode.endsWith('PDF') || upperMode.includes('PPT TO PDF') || upperMode.includes('EXCEL TO PDF')) {
+                    extension = '.pdf';
+                } else if (upperMode.endsWith('WORD')) {
+                    extension = '.docx';
+                } else if (upperMode.endsWith('IMAGE') || upperMode.includes('QR CODE')) {
+                    extension = '.jpg';
+                } else if (upperMode.endsWith('TEXT')) {
+                    extension = '.txt';
+                } else if (upperMode.endsWith('CODE')) {
+                    extension = '.png';
+                }
+                
+                a.download = selectedFile.name.split('.')[0] + extension;
+                document.body.appendChild(a);
+                a.click();
+                
+                window.URL.revokeObjectURL(url);
+                a.remove();
+                
+                convertBtn.innerText = "Converted!";
+                statusTitle.innerText = "Success! Check Downloads";
+                statusTitle.style.color = "#22c55e";
+                
+                setTimeout(() => {
+                    convertBtn.disabled = false;
+                    chooseBtn.disabled = false;
+                    convertBtn.innerText = "Convert Now";
+                }, 3000);
+
+            } catch (err) {
+                alert("Error: " + err.message);
+                convertBtn.disabled = false;
+                chooseBtn.disabled = false;
+                convertBtn.innerText = "Convert Now";
+                statusTitle.innerText = "Error Occurred";
+                statusTitle.style.color = "#ef4444";
+            }
+        };
+    </script>
+</body>
+</html>
