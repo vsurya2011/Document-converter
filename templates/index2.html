@@ -129,6 +129,7 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const mode = params.get('type') || 'Converter';
+        const upperMode = mode.toUpperCase();
         document.getElementById('mode-text').innerText = mode;
 
         const fileInput = document.getElementById('fileInput');
@@ -138,13 +139,18 @@
         const convertBtn = document.getElementById('convertBtn');
         const statusTitle = document.getElementById('status-title');
         
-        let selectedFile = null;
+        // Check if ZIP mode to enable multiple files
+        if (upperMode.includes("ZIP")) {
+            fileInput.setAttribute('multiple', 'true');
+        }
+
+        let selectedFiles = [];
 
         chooseBtn.onclick = () => fileInput.click();
         dropzone.onclick = () => fileInput.click();
 
         fileInput.onchange = (e) => {
-            if(e.target.files.length > 0) handleFile(e.target.files[0]);
+            if(e.target.files.length > 0) handleFiles(e.target.files);
         };
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
@@ -164,18 +170,22 @@
 
         dropzone.addEventListener('drop', (e) => {
             const files = e.dataTransfer.files;
-            if(files.length > 0) handleFile(files[0]);
+            if(files.length > 0) handleFiles(files);
         }, false);
 
-        function handleFile(file) {
-            selectedFile = file;
-            fileNameDisp.innerText = file.name;
-            statusTitle.innerText = "File Selected";
+        function handleFiles(files) {
+            selectedFiles = Array.from(files);
+            if (selectedFiles.length > 1) {
+                fileNameDisp.innerText = `${selectedFiles.length} FILES SELECTED`;
+            } else {
+                fileNameDisp.innerText = selectedFiles[0].name;
+            }
+            statusTitle.innerText = "Files Selected";
             statusTitle.style.color = "#22c55e"; 
         }
 
         convertBtn.onclick = async () => {
-            if(!selectedFile) return alert("Please select a file first!");
+            if(selectedFiles.length === 0) return alert("Please select a file first!");
 
             convertBtn.disabled = true;
             chooseBtn.disabled = true;
@@ -184,7 +194,10 @@
             statusTitle.style.color = "#ffffff";
 
             const formData = new FormData();
-            formData.append('file', selectedFile);
+            // Append all files to the 'file' key for Flask request.files.getlist('file')
+            selectedFiles.forEach(file => {
+                formData.append('file', file);
+            });
 
             try {
                 const response = await fetch(`/api/convert?type=${encodeURIComponent(mode)}`, { 
@@ -202,12 +215,11 @@
                 const a = document.createElement('a');
                 a.href = url;
                 
-                // UPDATED LOGIC: Enhanced extension detection for PPT, EXCEL and QR Code modes
                 let extension = '.txt';
-                const upperMode = mode.toUpperCase();
 
-                // Logic added to handle EXCEL TO PDF specifically
-                if (upperMode.endsWith('PDF') || upperMode.includes('PPT TO PDF') || upperMode.includes('EXCEL TO PDF')) {
+                if (upperMode.includes("ZIP")) {
+                    extension = '.zip';
+                } else if (upperMode.endsWith('PDF') || upperMode.includes('PPT TO PDF') || upperMode.includes('EXCEL TO PDF')) {
                     extension = '.pdf';
                 } else if (upperMode.endsWith('WORD')) {
                     extension = '.docx';
@@ -219,7 +231,8 @@
                     extension = '.png';
                 }
                 
-                a.download = selectedFile.name.split('.')[0] + extension;
+                const baseName = selectedFiles.length > 1 ? "converted_files" : selectedFiles[0].name.split('.')[0];
+                a.download = baseName + extension;
                 document.body.appendChild(a);
                 a.click();
                 
