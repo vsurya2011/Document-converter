@@ -21,10 +21,12 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px; /* Added padding for mobile edges */
+            box-sizing: border-box;
         }
 
         .container {
-            width: 90%;
+            width: 100%;
             max-width: 800px;
         }
 
@@ -33,14 +35,16 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 10px;
+            flex-wrap: wrap; /* Allows text to wrap on very small screens */
         }
 
         .folder-icon {
-            width: 35px;
-            height: 25px;
+            width: 30px;
+            height: 22px;
             background: var(--card-bg);
             position: relative;
             border-radius: 4px;
+            flex-shrink: 0;
         }
 
         .folder-icon::before {
@@ -55,7 +59,7 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 6vw, 2.5rem); /* Fluid typography */
             margin: 0;
             letter-spacing: -1px;
             text-transform: uppercase;
@@ -64,26 +68,26 @@
         .sub-header {
             border: 1.5px solid var(--text-black);
             display: inline-block;
-            padding: 5px 25px;
+            padding: 5px 20px;
             border-radius: 20px;
-            font-size: 1.2rem;
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
             margin-bottom: 20px;
         }
 
         .converter-card {
             background-color: var(--card-bg);
             border-radius: 20px;
-            padding: 40px;
+            padding: clamp(20px, 5vw, 40px);
             color: var(--text-white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         h2 {
-            font-size: 2.2rem;
+            font-size: clamp(1.2rem, 5vw, 2.2rem);
             margin: 0 0 20px 0;
             text-transform: uppercase;
         }
 
-        /* The Link Input Box */
         .link-input-area {
             width: 100%;
             padding: 15px;
@@ -91,10 +95,11 @@
             border: 1px solid #444;
             background: #111;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 25px;
             box-sizing: border-box;
             outline: none;
+            -webkit-appearance: none; /* Fixes iOS shadow */
         }
 
         .link-input-area:focus {
@@ -106,10 +111,11 @@
             margin-bottom: 30px;
         }
 
+        /* Responsive Grid */
         .controls-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 20px;
         }
 
         .upload-box {
@@ -120,9 +126,9 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 15px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
 
         .upload-box.drag-over {
@@ -131,12 +137,12 @@
         }
 
         .upload-box span {
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vw, 1.3rem);
             font-weight: bold;
         }
 
         .upload-box small {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             margin-top: 10px;
             color: #aaa;
             text-transform: uppercase;
@@ -145,22 +151,30 @@
         .button-group {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
         }
 
         .btn {
-            padding: 18px;
+            padding: 15px;
             border-radius: 12px;
             border: none;
             font-family: 'Arial Black', sans-serif;
-            font-size: 1.5rem;
+            font-size: clamp(1.1rem, 4vw, 1.4rem);
             cursor: pointer;
             text-transform: uppercase;
-            transition: transform 0.1s ease;
+            transition: transform 0.1s ease, opacity 0.2s;
+            width: 100%;
         }
 
-        .btn:active { transform: scale(0.98); }
+        /* Mobile specific touch feedback */
+        @media (hover: hover) {
+            .btn:hover { opacity: 0.9; }
+        }
+
+        .btn:active { 
+            transform: scale(0.96); 
+        }
 
         .btn-convert {
             background-color: var(--accent-green);
@@ -172,8 +186,18 @@
             color: var(--text-black);
         }
 
+        /* Mobile Adjustments */
         @media (max-width: 600px) {
-            .controls-grid { grid-template-columns: 1fr; }
+            .controls-grid {
+                grid-template-columns: 1fr; /* Stacks the boxes */
+            }
+            .upload-box {
+                padding: 40px 20px;
+            }
+            body {
+                align-items: flex-start; /* Better scrolling on short phones */
+                padding-top: 40px;
+            }
         }
     </style>
 </head>
@@ -188,13 +212,13 @@
 
         <div class="converter-card">
             <h2>Paste Your URL Here</h2>
-            <input type="text" id="url-input" class="link-input-area" placeholder="Enter link here...">
+            <input type="url" id="url-input" class="link-input-area" placeholder="https://example.com" spellcheck="false">
             
             <div class="divider"></div>
 
             <div class="controls-grid">
                 <input type="file" id="logo-input" hidden accept="image/*">
-                <div class="upload-box" id="drop-zone">
+                <div class="upload-box" id="drop-zone" onclick="document.getElementById('logo-input').click()">
                     <span id="upload-status">UPLOAD LOGO</span>
                     <small>(Optional center image)</small>
                 </div>
@@ -216,11 +240,12 @@
 
         let selectedLogo = null;
 
-        // Handle Click Upload
+        // Handle Click/Select Upload
         logoInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 selectedLogo = e.target.files[0];
                 uploadStatus.innerText = "LOGO LOADED";
+                uploadStatus.style.color = "var(--accent-green)";
             }
         });
 
@@ -240,6 +265,7 @@
             if (e.dataTransfer.files.length > 0) {
                 selectedLogo = e.dataTransfer.files[0];
                 uploadStatus.innerText = "LOGO LOADED";
+                uploadStatus.style.color = "var(--accent-green)";
             }
         });
 
@@ -252,9 +278,9 @@
             }
 
             convertBtn.innerText = "CONVERTING...";
+            convertBtn.disabled = true;
             
             const formData = new FormData();
-            // We send the link text as a file to match app.py logic
             const linkFile = new Blob([url], { type: 'text/plain' });
             formData.append('file', linkFile, 'link.txt');
             
@@ -285,6 +311,7 @@
                 alert("Failed to connect to server.");
             } finally {
                 convertBtn.innerText = "CONVERT";
+                convertBtn.disabled = false;
             }
         });
     </script>
