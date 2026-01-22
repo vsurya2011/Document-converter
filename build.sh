@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Exit on error
+# exit on error
 set -o errexit
 
+# Install Python packages
 pip install -r requirements.txt
 
-# Install the system tools needed for conversion
-apt-get update
-apt-get install -y libreoffice poppler-utils
+# Install the actual software engines for PDF and Word
+apt-get update && apt-get install -y libreoffice poppler-utils
