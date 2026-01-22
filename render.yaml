@@ -3,12 +3,8 @@ services:
     name: document-converter
     runtime: python
     plan: free
-    # This command runs your build script to install LibreOffice/Poppler
-    buildCommand: "./build.sh"
-    # This command starts your application using Gunicorn
+    buildCommand: "./build.sh" 
     startCommand: "gunicorn app:app"
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.12
-      - key: PORT
-        value: 5000
