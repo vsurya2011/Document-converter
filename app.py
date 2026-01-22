@@ -30,10 +30,14 @@ POPPLER_PATH = None
 
 def convert_via_libreoffice(input_path, output_folder):
     """Uses LibreOffice to convert Word/Excel/PPT to PDF on Linux."""
+    # Added --headless and environment flags to ensure it runs on Render
     subprocess.run([
-        'libreoffice', '--headless', '--convert-to', 'pdf', 
-        '--outdir', output_folder, input_path
-    ], check=True)
+        'libreoffice', 
+        '--headless', 
+        '--convert-to', 'pdf', 
+        '--outdir', output_folder, 
+        input_path
+    ], check=True, capture_output=True)
 
 def make_stylish_qr(data, logo_path, output_path):
     """Generates a QR code for the provided link data with a central logo."""
@@ -74,7 +78,6 @@ def index():
 
 @app.route('/upload')
 def upload_page():
-    # This renders index2.html where users pick files
     return render_template("index2.html")
 
 @app.route('/qr-converter')
@@ -87,7 +90,7 @@ def convert_api():
         if 'file' not in request.files:
             return jsonify({"error": "No file part"}), 400
             
-        files = request.files.getlist('file') # Get all uploaded files
+        files = request.files.getlist('file') 
         conversion = request.args.get('type', '').upper().replace('%20', ' ')
 
         if not files or files[0].filename == "":
@@ -96,7 +99,6 @@ def convert_api():
         unique_prefix = str(int(time.time()))
         output_path = ""
 
-        # ---------- ZIP CONVERSION (Multi-file support) ----------
         if "ZIP" in conversion:
             zip_filename = f"converted_{unique_prefix}.zip"
             output_path = os.path.join(OUTPUT_FOLDER, zip_filename)
@@ -107,11 +109,10 @@ def convert_api():
                     temp_input = os.path.join(UPLOAD_FOLDER, f"zip_{unique_prefix}_{sf_name}")
                     file.save(temp_input)
                     zipf.write(temp_input, sf_name)
-                    os.remove(temp_input) # Clean up temp file after zipping
+                    os.remove(temp_input) 
 
-        # ---------- SINGLE FILE CONVERSIONS ----------
         else:
-            file = files[0] # Single file logic for other types
+            file = files[0] 
             safe_name = f"{unique_prefix}_{secure_filename(file.filename)}"
             filename_no_ext = os.path.splitext(safe_name)[0]
             input_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, safe_name))
@@ -119,13 +120,20 @@ def convert_api():
 
             if "PDF TO WORD" in conversion:
                 output_path = os.path.join(OUTPUT_FOLDER, filename_no_ext + ".docx")
-                cv = Converter(input_path)
-                cv.convert(output_path)
-                cv.close()
+                # Use a try-block specifically for the converter
+                try:
+                    cv = Converter(input_path)
+                    cv.convert(output_path, start=0, end=None)
+                    cv.close()
+                except Exception as pdf_err:
+                    return jsonify({"error": f"PDF Conversion failed: {str(pdf_err)}"}), 500
 
             elif any(x in conversion for x in ["WORD TO PDF", "PPT TO PDF", "EXCEL TO PDF"]):
-                convert_via_libreoffice(input_path, OUTPUT_FOLDER)
-                output_path = os.path.join(OUTPUT_FOLDER, filename_no_ext + ".pdf")
+                try:
+                    convert_via_libreoffice(input_path, OUTPUT_FOLDER)
+                    output_path = os.path.join(OUTPUT_FOLDER, filename_no_ext + ".pdf")
+                except Exception as lib_err:
+                    return jsonify({"error": f"LibreOffice failed: {str(lib_err)}"}), 500
 
             elif "PDF TO IMAGE" in conversion:
                 output_path = os.path.join(OUTPUT_FOLDER, filename_no_ext + ".jpg")
